@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id_mat": "001",
+      "num_att": "2600378",
+      "nom": "MENHOUR",
+      "prenom": "OTHMAN",
+      "birth": "23-12-1988",
+      "date_annul": ""
+    },
+    {
+      "id_mat": "002",
+      "num_att": "2600379",
+      "nom": "AHMED",
+      "prenom": "FATIMA",
+      "birth": "15-06-1990",
+      "date_annul": ""
+    },
+    {
+      "id_mat": "003",
+      "num_att": "2600380",
+      "nom": "BOULANGER",
+      "prenom": "KARIM",
+      "birth": "08-03-1985",
+      "date_annul": "31-12-2025"
+    }
+  ]
+}
