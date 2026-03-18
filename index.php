@@ -1,0 +1,129 @@
+<?php
+// Get the id_Matricule from GET variable
+$id_Mat = isset($_GET['mat']) ? htmlspecialchars($_GET['mat']) : '';
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attestation Authentique - Vérification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Times New Roman", Times, serif;
+            background-color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        
+        .header-image {
+            width: 100%;
+            height: 170px;
+            object-fit: fill;
+            display: block;
+        }
+        
+        .attestation-text {
+            width: 100%;
+            text-align: center;
+            margin-top: 16px;
+            margin-bottom: 16px;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+        
+        .text-green {
+            color: #16a34a;
+        }
+        
+        .text-red {
+            color: #dc2626;
+        }
+        
+        .info-container {
+            max-width: calc(100% - 4px);
+            margin: 0 auto;
+            background-color: white;
+            border: 0.5px solid #16a34a;
+            border-radius: 10px;
+            padding: 6px 4px;
+            font-size: 12pt;
+            line-height: 1.6;
+        }
+        
+        .info-text {
+            text-align: left;
+        }
+        
+        .info-text p {
+            margin-bottom: 5px;
+        }
+        
+        .info-text p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .label {
+            font-weight: bold;
+        }
+        
+        .red-slash {
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <!-- Header Image -->
+        <div>
+            <img src="https://i.imgur.com/BLPOEaV.jpeg" alt="Header banner" class="header-image">
+        </div>
+
+        <!-- Attestation Text Lines -->
+        <div class="attestation-text">
+            <p class="text-green">Attestation authentique</p>
+            <p class="text-red">Veuillez vérifier les informations personelles</p>
+        </div>
+
+        <!-- Information Container -->
+      <script>
+        
+      </script>
+        <div class="info-container">
+            <div class="info-text">
+                <p>
+                    <span class="label">Matricule:</span> <?php echo($id_Mat); ?>
+                </p>
+                <p>
+                    <span class="label">N° attestation:</span> 2600378
+                </p>
+                <p>
+                    <span class="label">Nom:</span> MENHOUR 
+                </p>
+                <p>
+                    <span class="label">Prenom:</span> OTHMAN 
+                </p>
+                <p>
+                    <span class="label">Date de naissance:</span> 23-12-1988
+                </p>
+                <p>
+                    <span class="label">Date ajour:</span> 31-12-2026
+                </p>
+                <p>
+                    <span class="label">Date annulation:</span><span class="red-slash"> /</span>
+                </p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
