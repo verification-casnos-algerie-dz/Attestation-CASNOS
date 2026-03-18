@@ -80,6 +80,13 @@ $id_Mat = isset($_GET['mat']) ? htmlspecialchars($_GET['mat']) : '';
         .red-slash {
             color: #dc2626;
         }
+        
+        .error-message {
+            color: #dc2626;
+            text-align: center;
+            padding: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -96,34 +103,76 @@ $id_Mat = isset($_GET['mat']) ? htmlspecialchars($_GET['mat']) : '';
         </div>
 
         <!-- Information Container -->
-      <script>
-        
-      </script>
         <div class="info-container">
-            <div class="info-text">
-                <p>
-                    <span class="label">Matricule:</span> <?php echo($id_Mat); ?>
-                </p>
-                <p>
-                    <span class="label">N° attestation:</span> 2600378
-                </p>
-                <p>
-                    <span class="label">Nom:</span> MENHOUR 
-                </p>
-                <p>
-                    <span class="label">Prenom:</span> OTHMAN 
-                </p>
-                <p>
-                    <span class="label">Date de naissance:</span> 23-12-1988
-                </p>
-                <p>
-                    <span class="label">Date ajour:</span> 31-12-2026
-                </p>
-                <p>
-                    <span class="label">Date annulation:</span><span class="red-slash"> /</span>
-                </p>
+            <div class="info-text" id="userInfo">
+                <p class="error-message">Chargement des données...</p>
             </div>
         </div>
     </main>
+
+    <script>
+        // Load JSON data and display user information
+        function loadUserData() {
+            const idMat = '<?php echo($id_Mat); ?>';
+            
+            if (!idMat) {
+                document.getElementById('userInfo').innerHTML = 
+                    '<p class="error-message">Veuillez fournir un numéro de matricule.</p>';
+                return;
+            }
+
+            // Fetch the JSON data
+            fetch('data.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Fichier de données introuvable');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Search for user by id_mat
+                    const user = data.users.find(u => u.id_mat === idMat);
+                    
+                    if (user) {
+                        // Display user data
+                        const dateAnnul = user.date_annul ? user.date_annul : '<span class="red-slash"> /</span>';
+                        document.getElementById('userInfo').innerHTML = `
+                            <p>
+                                <span class="label">Matricule:</span> ${user.id_mat}
+                            </p>
+                            <p>
+                                <span class="label">N° attestation:</span> ${user.num_att}
+                            </p>
+                            <p>
+                                <span class="label">Nom:</span> ${user.nom}
+                            </p>
+                            <p>
+                                <span class="label">Prenom:</span> ${user.prenom}
+                            </p>
+                            <p>
+                                <span class="label">Date de naissance:</span> ${user.birth}
+                            </p>
+                            <p>
+                                <span class="label">Date ajour:</span> 31-12-2026
+                            </p>
+                            <p>
+                                <span class="label">Date annulation:</span> ${dateAnnul}
+                            </p>
+                        `;
+                    } else {
+                        document.getElementById('userInfo').innerHTML = 
+                            '<p class="error-message">Matricule non trouvé dans la base de données.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    document.getElementById('userInfo').innerHTML = 
+                        '<p class="error-message">Erreur lors du chargement des données: ' + error.message + '</p>';
+                });
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadUserData);
+    </script>
 </body>
 </html>
