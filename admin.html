@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Management</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        form { display: grid; gap: 10px; max-width: 400px; background: #f9f9f9; padding: 15px; border-radius: 8px; }
+        .controls { margin-top: 20px; border-top: 1px solid #ccc; pt: 10px; }
+    </style>
 </head>
 <body>
     <h1>User Management Interface</h1>
@@ -21,6 +29,7 @@
         </thead>
         <tbody></tbody>
     </table>
+
     <h2>Add/Edit User</h2>
     <form id="userForm">
         <input type="hidden" id="userId" />
@@ -30,23 +39,44 @@
         <label>Prenom:</label><input type="text" id="prenom" required />
         <label>Birth:</label><input type="date" id="birth" required />
         <label>Date Annul:</label><input type="date" id="date_annul" required />
-        <button type="submit">Save User</button>
+        <button type="submit">Save to List</button>
     </form>
-    <button id="downloadJson">Download JSON Data</button>
+
+    <div class="controls">
+        <p><strong>Step 2:</strong> After saving changes above, click below to update your file.</p>
+        <button id="downloadJson" style="padding: 10px; background: #16a34a; color: white; border: none; cursor: pointer;">
+            Download Updated dataJS.json
+        </button>
+    </div>
+
     <script>
         let users = [];
 
-        // Load users from the JSON file
+        // Helper: Convert YYYY-MM-DD (HTML) to DD-MM-YYYY (JSON)
+        function formatToJSONDate(dateStr) {
+            if (!dateStr) return "";
+            const [year, month, day] = dateStr.split('-');
+            return `${day}-${month}-${year}`;
+        }
+
+        // Helper: Convert DD-MM-YYYY (JSON) to YYYY-MM-DD (HTML)
+        function formatToHTMLDate(dateStr) {
+            if (!dateStr || !dateStr.includes('-')) return "";
+            const [day, month, year] = dateStr.split('-');
+            return `${year}-${month}-${day}`;
+        }
+
         function loadUsers() {
             fetch('dataJS.json')
                 .then(response => response.json())
                 .then(data => {
-                    users = data;
+                    // Fix: Target the 'users' array inside the object
+                    users = data.users || []; 
                     displayUsers();
-                });
+                })
+                .catch(err => console.error("Error loading JSON:", err));
         }
 
-        // Display users in the table
         function displayUsers() {
             const tbody = document.querySelector('#userTable tbody');
             tbody.innerHTML = '';
@@ -59,52 +89,60 @@
                 row.insertCell(4).innerText = user.birth;
                 row.insertCell(5).innerText = user.date_annul;
                 const actionsCell = row.insertCell(6);
-                actionsCell.innerHTML = `<button onclick='editUser(${index})'>Edit</button> <button onclick='deleteUser(${index})'>Delete</button>`;
+                actionsCell.innerHTML = `
+                    <button onclick='editUser(${index})'>Edit</button> 
+                    <button onclick='deleteUser(${index})' style="color:red">Delete</button>`;
             });
         }
 
-        // Add/Edit user
         document.getElementById('userForm').onsubmit = function (event) {
             event.preventDefault();
             const id = document.getElementById('userId').value;
+            
             const newUser = {
                 id_mat: document.getElementById('id_mat').value,
                 num_att: document.getElementById('num_att').value,
-                nom: document.getElementById('nom').value,
-                prenom: document.getElementById('prenom').value,
-                birth: document.getElementById('birth').value,
-                date_annul: document.getElementById('date_annul').value,
+                nom: document.getElementById('nom').value.toUpperCase(),
+                prenom: document.getElementById('prenom').value.toUpperCase(),
+                // Format dates to match your existing data format
+                birth: formatToJSONDate(document.getElementById('birth').value),
+                date_annul: formatToJSONDate(document.getElementById('date_annul').value),
             };
-            if (id) {
+
+            if (id !== "") {
                 users[id] = newUser;
             } else {
                 users.push(newUser);
             }
+            
             displayUsers();
             document.getElementById('userForm').reset();
             document.getElementById('userId').value = '';
         };
 
-        // Edit user
         function editUser(index) {
+            const user = users[index];
             document.getElementById('userId').value = index;
-            document.getElementById('id_mat').value = users[index].id_mat;
-            document.getElementById('num_att').value = users[index].num_att;
-            document.getElementById('nom').value = users[index].nom;
-            document.getElementById('prenom').value = users[index].prenom;
-            document.getElementById('birth').value = users[index].birth;
-            document.getElementById('date_annul').value = users[index].date_annul;
+            document.getElementById('id_mat').value = user.id_mat;
+            document.getElementById('num_att').value = user.num_att;
+            document.getElementById('nom').value = user.nom;
+            document.getElementById('prenom').value = user.prenom;
+            document.getElementById('birth').value = formatToHTMLDate(user.birth);
+            document.getElementById('date_annul').value = formatToHTMLDate(user.date_annul);
         }
 
-        // Delete user
         function deleteUser(index) {
-            users.splice(index, 1);
-            displayUsers();
+            if(confirm("Delete this user?")) {
+                users.splice(index, 1);
+                displayUsers();
+            }
         }
 
-        // Download JSON data
+        // DOWNLOAD LOGIC
         document.getElementById('downloadJson').onclick = function() {
-            const dataStr = JSON.stringify(users);
+            // Fix: Wrap the array back into the {"users": [...]} structure
+            const finalData = { users: users };
+            const dataStr = JSON.stringify(finalData, null, 4);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
