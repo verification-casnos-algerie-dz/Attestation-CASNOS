@@ -3,94 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management Interface</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; }
-        th { background-color: #f2f2f2; }
-        .button { margin: 5px; }
-    </style>
+    <title>User Management</title>
 </head>
 <body>
     <h1>User Management Interface</h1>
-    <form id="userForm">
-        <input type="text" id="username" placeholder="Username" required />
-        <input type="email" id="useremail" placeholder="Email" required />
-        <button type="submit">Add User</button>
-    </form>
-    <h2>Users</h2>
     <table id="userTable">
         <thead>
             <tr>
-                <th>Username</th>
-                <th>Email</th>
+                <th>ID Mat</th>
+                <th>Num Att</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Birth</th>
+                <th>Date Annul</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
+    <h2>Add/Edit User</h2>
+    <form id="userForm">
+        <input type="hidden" id="userId" />
+        <label>ID Mat:</label><input type="text" id="id_mat" required />
+        <label>Num Att:</label><input type="text" id="num_att" required />
+        <label>Nom:</label><input type="text" id="nom" required />
+        <label>Prenom:</label><input type="text" id="prenom" required />
+        <label>Birth:</label><input type="date" id="birth" required />
+        <label>Date Annul:</label><input type="date" id="date_annul" required />
+        <button type="submit">Save User</button>
+    </form>
+    <button id="downloadJson">Download JSON Data</button>
     <script>
         let users = [];
-        const loadUsers = () => {
-            $.getJSON('dataJS.json', (data) => {
-                users = data.users;
-                renderUsers();
-            });
-        };
-        const renderUsers = () => {
-            const tbody = $('#userTable tbody');
-            tbody.empty();
+
+        // Load users from the JSON file
+        function loadUsers() {
+            fetch('dataJS.json')
+                .then(response => response.json())
+                .then(data => {
+                    users = data;
+                    displayUsers();
+                });
+        }
+
+        // Display users in the table
+        function displayUsers() {
+            const tbody = document.querySelector('#userTable tbody');
+            tbody.innerHTML = '';
             users.forEach((user, index) => {
-                tbody.append(`<tr>
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
-                    <td>
-                        <button class='edit' data-index='${index}'>Edit</button>
-                        <button class='delete' data-index='${index}'>Delete</button>
-                    </td>
-                </tr>`);
+                const row = tbody.insertRow();
+                row.insertCell(0).innerText = user.id_mat;
+                row.insertCell(1).innerText = user.num_att;
+                row.insertCell(2).innerText = user.nom;
+                row.insertCell(3).innerText = user.prenom;
+                row.insertCell(4).innerText = user.birth;
+                row.insertCell(5).innerText = user.date_annul;
+                const actionsCell = row.insertCell(6);
+                actionsCell.innerHTML = `<button onclick='editUser(${index})'>Edit</button> <button onclick='deleteUser(${index})'>Delete</button>`;
             });
-            attachEventListeners();
-        };
-        const attachEventListeners = () => {
-            $('.edit').on('click', function() {
-                const index = $(this).data('index');
-                $('#username').val(users[index].username);
-                $('#useremail').val(users[index].email);
-                users.splice(index, 1);
-                renderUsers();
-            });
-            $('.delete').on('click', function() {
-                const index = $(this).data('index');
-                users.splice(index, 1);
-                renderUsers();
-            });
-        };
-        $('#userForm').on('submit', function(e) {
-            e.preventDefault();
+        }
+
+        // Add/Edit user
+        document.getElementById('userForm').onsubmit = function (event) {
+            event.preventDefault();
+            const id = document.getElementById('userId').value;
             const newUser = {
-                username: $('#username').val(),
-                email: $('#useremail').val()
+                id_mat: document.getElementById('id_mat').value,
+                num_att: document.getElementById('num_att').value,
+                nom: document.getElementById('nom').value,
+                prenom: document.getElementById('prenom').value,
+                birth: document.getElementById('birth').value,
+                date_annul: document.getElementById('date_annul').value,
             };
-            users.push(newUser);
-            $('#username').val('');
-            $('#useremail').val('');
-            renderUsers();
-            saveUsers();
-        });
-        const saveUsers = () => {
-            $.ajax({
-                url: 'dataJS.json',
-                type: 'PUT',
-                data: JSON.stringify({ users }),
-                contentType: 'application/json',
-                success: function() {
-                    console.log('Users saved successfully.');
-                }
-            });
+            if (id) {
+                users[id] = newUser;
+            } else {
+                users.push(newUser);
+            }
+            displayUsers();
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
         };
-        $(document).ready(loadUsers);
+
+        // Edit user
+        function editUser(index) {
+            document.getElementById('userId').value = index;
+            document.getElementById('id_mat').value = users[index].id_mat;
+            document.getElementById('num_att').value = users[index].num_att;
+            document.getElementById('nom').value = users[index].nom;
+            document.getElementById('prenom').value = users[index].prenom;
+            document.getElementById('birth').value = users[index].birth;
+            document.getElementById('date_annul').value = users[index].date_annul;
+        }
+
+        // Delete user
+        function deleteUser(index) {
+            users.splice(index, 1);
+            displayUsers();
+        }
+
+        // Download JSON data
+        document.getElementById('downloadJson').onclick = function() {
+            const dataStr = JSON.stringify(users);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'dataJS.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+
+        loadUsers();
     </script>
 </body>
 </html>
