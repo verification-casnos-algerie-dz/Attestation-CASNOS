@@ -62,7 +62,7 @@
             "nom": "MOMO",
             "prenom": "TEST",
             "birth": "03-03-2026",
-            "date_annul": "29-03-2026"
+            "date_annul": "/"
         }
     ]
 }
