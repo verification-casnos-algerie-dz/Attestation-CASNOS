@@ -98,7 +98,11 @@
         document.getElementById('userForm').onsubmit = function (event) {
             event.preventDefault();
             const id = document.getElementById('userId').value;
-            
+
+            let date_annulation = formatToJSONDate(document.getElementById('date_annul').value);
+            if (date_annulation == "01-01-2000"){
+                date_annulation = "/";
+            }
             const newUser = {
                 id_mat: document.getElementById('id_mat').value,
                 num_att: document.getElementById('num_att').value,
@@ -106,7 +110,7 @@
                 prenom: document.getElementById('prenom').value.toUpperCase(),
                 // Format dates to match your existing data format
                 birth: formatToJSONDate(document.getElementById('birth').value),
-                date_annul: formatToJSONDate(document.getElementById('date_annul').value),
+                date_annul: date_annulaton,
             };
 
             if (id !== "") {
