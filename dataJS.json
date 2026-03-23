@@ -6,7 +6,7 @@
             "nom": "MENHOUR",
             "prenom": "OTHMAN",
             "birth": "23-12-1988",
-            "date_annul": "/"
+            "date_annul": "31-12-2026"
         },
         {
             "id_mat": "218180456",
@@ -54,7 +54,7 @@
             "nom": "ABDI",
             "prenom": "SOFIANE",
             "birth": "10-06-1978",
-            "date_annul": "31-12-2026"
+            "date_annul": "01-01-2000"
         },
         {
             "id_mat": "218180453",
@@ -62,7 +62,7 @@
             "nom": "MOMO",
             "prenom": "TEST",
             "birth": "03-03-2026",
-            "date_annul": "/"
+            "date_annul": "29-03-2026"
         }
     ]
 }
