@@ -1,163 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f4f4f4; }
-        form { display: grid; gap: 10px; max-width: 400px; background: #f9f9f9; padding: 15px; border-radius: 8px; }
-        .controls { margin-top: 20px; border-top: 1px solid #ccc; pt: 10px; }
-    </style>
-</head>
-<body>
-    <h1>User Management Interface</h1>
-    <table id="userTable">
-        <thead>
-            <tr>
-                <th>ID Mat</th>
-                <th>Num Att</th>
-                <th>Nom</th>
-                <th>Prenom</th>
-                <th>Birth</th>
-                <th>Date Annul</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <h2>Add/Edit User</h2>
-    <form id="userForm">
-        <input type="hidden" id="userId" />
-        <label>ID Mat:</label><input type="text" id="id_mat" required />
-        <label>Num Att:</label><input type="text" id="num_att" required />
-        <label>Nom:</label><input type="text" id="nom" required />
-        <label>Prenom:</label><input type="text" id="prenom" required />
-        <label>Birth:</label><input type="date" id="birth" required />
-        <label>Date Annul:</label><input type="date" id="date_annul" required />
-        <button type="submit">Save to List</button>
-    </form>
-
-    <div class="controls">
-        <p><strong>Step 2:</strong> After saving changes above, click below to update your file.</p>
-        <button id="downloadJson" style="padding: 10px; background: #16a34a; color: white; border: none; cursor: pointer;">
-            Download Updated dataJS.json
-        </button>
-    </div>
-
-    <script>
-        let users = [];
-
-        // Helper: Convert YYYY-MM-DD (HTML) to DD-MM-YYYY (JSON)
-        function formatToJSONDate(dateStr) {
-            if (!dateStr) return "";
-            const [year, month, day] = dateStr.split('-');
-            return `${day}-${month}-${year}`;
+{
+    "users": [
+        {
+            "id_mat": "218180447",
+            "num_att": "2600378",
+            "nom": "MENHOUR",
+            "prenom": "OTHMAN",
+            "birth": "23-12-1988",
+            "date_annul": "31-12-2026"
+        },
+        {
+            "id_mat": "218180456",
+            "num_att": "2600390",
+            "nom": "BOURAOUI",
+            "prenom": "MEHDI",
+            "birth": "01-12-1987",
+            "date_annul": "31-12-2026"
+        },
+        {
+            "id_mat": "218180455",
+            "num_att": "2600380",
+            "nom": "DJABER",
+            "prenom": "MEHDI",
+            "birth": "01-12-1987",
+            "date_annul": "31-12-2026"
+        },
+        {
+            "id_mat": "218180448",
+            "num_att": "2600378",
+            "nom": "CHATER",
+            "prenom": "MOHAMED",
+            "birth": "23-12-1982",
+            "date_annul": "31-12-2026"
+        },
+        {
+            "id_mat": "218180449",
+            "num_att": "2600358",
+            "nom": "CHELGHAM",
+            "prenom": "MOHAMED",
+            "birth": "23-12-1982",
+            "date_annul": "31-12-2026"
+        },
+        {
+            "id_mat": "218180450",
+            "num_att": "2600358",
+            "nom": "Zidane",
+            "prenom": "Zinneddine",
+            "birth": "23-12-1982",
+            "date_annul": "31-12-2027"
+        },
+        {
+            "id_mat": "21818060064",
+            "num_att": "2601112",
+            "nom": "ABDI",
+            "prenom": "SOFIANE",
+            "birth": "10-06-1978",
+            "date_annul": "/"
+        },
+        {
+            "id_mat": "218180453",
+            "num_att": "2600383",
+            "nom": "MOMO",
+            "prenom": "TEST",
+            "birth": "03-03-2026",
+            "date_annul": "29-03-2026"
+        },
+        {
+            "id_mat": "21860172254",
+            "num_att": "2600465",
+            "nom": "BEN YAHIA",
+            "prenom": "MOHAMMED LABIB",
+            "birth": "20-09-1988",
+            "date_annul": "/"
+        },
+        {
+            "id_mat": "21860172254",
+            "num_att": "2600490",
+            "nom": "BOUHAI",
+            "prenom": "AMIR",
+            "birth": "15-11-1995",
+            "date_annul": "/"
+        },
+        {
+            "id_mat": "21860172359",
+            "num_att": "2600490",
+            "nom": "BOUHAI",
+            "prenom": "AMIR",
+            "birth": "15-11-1995",
+            "date_annul": "/"
+        },
+        {
+            "id_mat": "20606986732",
+            "num_att": "2604932",
+            "nom": "HASSAINI",
+            "prenom": "MEHDI",
+            "birth": "18-07-1995",
+            "date_annul": "/"
+        },
+        {
+            "id_mat": "20606035841",
+            "num_att": "2618754",
+            "nom": "HAIL",
+            "prenom": "ZINEDDINE",
+            "birth": "19-03-2003",
+            "date_annul": "/"
         }
-
-        // Helper: Convert DD-MM-YYYY (JSON) to YYYY-MM-DD (HTML)
-        function formatToHTMLDate(dateStr) {
-            if (!dateStr || !dateStr.includes('-')) return "";
-            const [day, month, year] = dateStr.split('-');
-            return `${year}-${month}-${day}`;
-        }
-
-        function loadUsers() {
-            fetch('dataJS.json')
-                .then(response => response.json())
-                .then(data => {
-                    // Fix: Target the 'users' array inside the object
-                    users = data.users || []; 
-                    displayUsers();
-                })
-                .catch(err => console.error("Error loading JSON:", err));
-        }
-
-        function displayUsers() {
-            const tbody = document.querySelector('#userTable tbody');
-            tbody.innerHTML = '';
-            users.forEach((user, index) => {
-                const row = tbody.insertRow();
-                row.insertCell(0).innerText = user.id_mat;
-                row.insertCell(1).innerText = user.num_att;
-                row.insertCell(2).innerText = user.nom;
-                row.insertCell(3).innerText = user.prenom;
-                row.insertCell(4).innerText = user.birth;
-                row.insertCell(5).innerText = user.date_annul;
-                const actionsCell = row.insertCell(6);
-                actionsCell.innerHTML = `
-                    <button onclick='editUser(${index})'>Edit</button> 
-                    <button onclick='deleteUser(${index})' style="color:red">Delete</button>`;
-            });
-        }
-
-        document.getElementById('userForm').onsubmit = function (event) {
-            event.preventDefault();
-            const id = document.getElementById('userId').value;
-
-            let date_annulation = formatToJSONDate(document.getElementById('date_annul').value);
-            if (date_annulation == "01-01-2000"){
-                date_annulation = "/";
-            }
-            const newUser = {
-                id_mat: document.getElementById('id_mat').value,
-                num_att: document.getElementById('num_att').value,
-                nom: document.getElementById('nom').value.toUpperCase(),
-                prenom: document.getElementById('prenom').value.toUpperCase(),
-                // Format dates to match your existing data format
-                birth: formatToJSONDate(document.getElementById('birth').value),
-                date_annul: date_annulation,
-            };
-
-            if (id !== "") {
-                users[id] = newUser;
-            } else {
-                users.push(newUser);
-            }
-            
-            displayUsers();
-            document.getElementById('userForm').reset();
-            document.getElementById('userId').value = '';
-        };
-
-        function editUser(index) {
-            const user = users[index];
-            document.getElementById('userId').value = index;
-            document.getElementById('id_mat').value = user.id_mat;
-            document.getElementById('num_att').value = user.num_att;
-            document.getElementById('nom').value = user.nom;
-            document.getElementById('prenom').value = user.prenom;
-            document.getElementById('birth').value = formatToHTMLDate(user.birth);
-            document.getElementById('date_annul').value = formatToHTMLDate(user.date_annul);
-        }
-
-        function deleteUser(index) {
-            if(confirm("Delete this user?")) {
-                users.splice(index, 1);
-                displayUsers();
-            }
-        }
-
-        // DOWNLOAD LOGIC
-        document.getElementById('downloadJson').onclick = function() {
-            // Fix: Wrap the array back into the {"users": [...]} structure
-            const finalData = { users: users };
-            const dataStr = JSON.stringify(finalData, null, 4);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'dataJS.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        };
-
-        loadUsers();
-    </script>
-</body>
-</html>
+    ]
+}
